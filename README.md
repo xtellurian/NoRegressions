@@ -30,7 +30,7 @@ iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercon
 
 On Linux:
 ```sh
-echo "linux installer not implemented yet!"
+wget -O - https://raw.githubusercontent.com/xtellurian/NoRegressions/install/install.sh | bash
 ```
 
 Now NoRegressions is aliased as `noreg`
