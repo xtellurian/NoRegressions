@@ -9,73 +9,47 @@ $RELEASE_VERSION="v0.0.2"
 ### Set install location
 $INSTALL_DIR = Join-Path -Path $HOME -ChildPath ".noreg"
 
-function Install-NoRegressions{
-    echo "Installing NoRegressions...";
+echo "Installing NoRegressions...";
 
-    # check prerequestit dotnet version
-    $DOTNET_VERSION = dotnet --version
+# set some variables
+$URI="https://github.com/xtellurian/NoRegressions/releases/download/$RELEASE_VERSION/noreg-win10-x64.zip"
+$ZIPFILENAME="noreg-$RELEASE_VERSION.zip"
+$ZIPFILE = Join-Path -Path $INSTALL_DIR -ChildPath $ZIPFILENAME
 
-    if ( $DOTNET_VERSION -lt 2.2 )
-    {
-        echo "dotnet version must be 2.2 or greater"
-        exit 1
-    } else {
-        echo "Dotnet version $DOTNET_VERSION is OK"
-    }
-
-    # set some variables
-    $URI="https://github.com/xtellurian/NoRegressions/releases/download/$RELEASE_VERSION/noreg-win10-x64.zip"
-    $ZIPFILENAME="noreg-$RELEASE_VERSION.zip"
-
-    $ZIPFILE = Join-Path -Path $INSTALL_DIR -ChildPath $ZIPFILENAME
-    if(-Not [System.IO.Directory]::Exists($INSTALL_DIR))
-    {
-        New-Item $INSTALL_DIR -ItemType directory
-    }
-    ##  download the release  ####
-    Invoke-WebRequest -Uri $URI -UseBasicParsing -OutFile $ZIPFILE
-    echo "Downloaded $ZIPFILE"
-    echo "Installing to $INSTALL_DIR"
-
-
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($ZIPFILE, $INSTALL_DIR)
-
-    # create a PS profile if not exists
-    if(-Not [System.IO.File]::Exists($profile))
-    {
-        echo "Creating PS profile at $profile"
-        New-Item -Type file -Force $profile
-    }
-
-    # download this file into the right location
-    $FILE_TO_SOURCE =  Join-Path -Path $INSTALL_DIR -ChildPath "install.ps1"
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/xtellurian/NoRegressions/install/install.ps1" -UseBasicParsing -OutFile $FILE_TO_SOURCE
-    # source this file when booting powershell
-    $startup_command = ". $INSTALL_DIR\install.ps1 -runtime"
-    $file = Get-Content $profile
-    $containsWord = $file | %{$_ -match ".noreg"}
-    if ($containsWord -contains $true) {
-        Write-Host "Already sourcing this file"
-    } else {
-        echo "adding to profile"
-        echo $startup_command | Out-File $profile -Append # adds newline to profile
-        echo "" | Out-File $profile -Append # newline
-    }
-   
-}
-
-$global:NOREG_EXE_PATH = Join-Path -Path $INSTALL_DIR -ChildPath "publish\cli.exe"
-echo "noreg path is $global:NOREG_EXE_PATH"
-if($runtime)
+if(-Not [System.IO.Directory]::Exists($INSTALL_DIR))
 {
-    
+    New-Item $INSTALL_DIR -ItemType directory
+}
+##  download the release  ####
+Invoke-WebRequest -Uri $URI -UseBasicParsing -OutFile $ZIPFILE
+echo "Downloaded $ZIPFILE"
+echo "Installing to $INSTALL_DIR"
+
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory($ZIPFILE, $INSTALL_DIR)
+
+# create a PS profile if not exists
+if(-Not [System.IO.File]::Exists($profile))
+{
+    echo "Creating PS profile at $profile"
+    New-Item -Type file -Force $profile
+}
+
+# setup our environment so we can use noreg
+
+$file = Get-Content $profile
+$containsWord = $file | %{$_ -match ".noreg"}
+if ($containsWord -contains $true) {
+    Write-Host "Already sourcing this file"
 } else {
-    Install-NoRegressions
+    echo "adding to profile"
+    $Env:path += ";$"
+    Set-Alias noreg noreg-cli -Scope Global
+    # do the same but in the profile
+    $SETENV_COMMAND = -join('$Env:path += ', '"',";$INSTALL_DIR\publish", '"')   
+    echo $SETENV_COMMAND
+    echo $SETENV_COMMAND | Out-File $profile -Append # 
+    echo "Set-Alias noreg noreg-cli -Scope Global"| Out-File $profile -Append # 
+    echo "" | Out-File $profile -Append # newline
 }
-
-function global:Execute-NoRegressions {
-    ./$global:NOREG_EXE_PATH $args
-}
-
-Set-Alias noreg Execute-NoRegressions -Scope Global
