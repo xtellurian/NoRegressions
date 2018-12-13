@@ -49,8 +49,6 @@ function Install-NoRegressions{
         New-Item -Type file -Force $profile
     }
 
-    Set-Variable -Name NOREG_DLL_PATH -Value $NOREG_DLL_PATH -Scope Global -Force
-
     # download this file into the right location
     $FILE_TO_SOURCE =  Join-Path -Path $INSTALL_DIR -ChildPath "install.ps1"
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/xtellurian/NoRegressions/install/install.ps1" -UseBasicParsing -OutFile $FILE_TO_SOURCE
