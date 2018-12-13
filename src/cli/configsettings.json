@@ -1,0 +1,16 @@
+{
+  "storage": {
+    "remote": {
+      "azureBlob": {
+        "connectionString": null,
+        "default": false,
+        "container": null
+      }
+    }
+  },
+  "customVision": {
+    "predictionKey": "",
+    "endpoint": "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/<your-id>/url",
+    "iterationId": ""
+  }
+}
