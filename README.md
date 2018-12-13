@@ -25,7 +25,9 @@ NoRegressions provides a CLI that can:
 On Windows:
 
 ```powershell
-echo "windows installer not implemented yet!"
+iwr https://raw.githubusercontent.com/xtellurian/NoRegressions/install/install.ps1 -OutFile install.ps1
+./install.ps1 -install
+rm install.ps1
 ```
 
 On Linux:
