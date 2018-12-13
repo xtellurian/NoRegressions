@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\cli\cli.csproj" />
+    <ProjectReference Include="..\..\src\cli\noreg-cli.csproj" />
     <ProjectReference Include="..\..\src\core\core.csproj" />
   </ItemGroup>
 

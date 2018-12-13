@@ -14,6 +14,8 @@ namespace cli.Handlers
     public class ConfigureHandler : IConfigureHandler
     {
         private readonly ILogger logger;
+        private string ConfigurationRoot => CliDependencies.ConfigurationRoot;
+        private string ConfigFilePath => Path.Combine(ConfigurationRoot, "configsettings.json");
 
         public ConfigureHandler(ILogger logger)
         {
@@ -76,15 +78,15 @@ namespace cli.Handlers
             SaveConfigurationModel(jsonObj);
         }
 
-        private static void SaveConfigurationModel(ConfigurationModel jsonObj)
+        private void SaveConfigurationModel(ConfigurationModel jsonObj)
         {
             string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
-            File.WriteAllText("configsettings.json", output);
+            File.WriteAllText(ConfigFilePath, output);
         }
 
-        private static ConfigurationModel LoadConfigurationModel()
+        private ConfigurationModel LoadConfigurationModel()
         {
-            string json = File.ReadAllText("configsettings.json");
+            string json = File.ReadAllText(ConfigFilePath);
             var jsonObj = JsonConvert.DeserializeObject<ConfigurationModel>(json);
             return jsonObj;
         }

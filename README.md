@@ -25,7 +25,7 @@ NoRegressions provides a CLI that can:
 On Windows:
 
 ```powershell
-echo "windows installer not implemented yet!"
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/xtellurian/NoRegressions/install/install.ps1'))
 ```
 
 On Linux:
