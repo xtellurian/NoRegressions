@@ -25,9 +25,7 @@ NoRegressions provides a CLI that can:
 On Windows:
 
 ```powershell
-iwr https://raw.githubusercontent.com/xtellurian/NoRegressions/install/install.ps1 -OutFile install.ps1
-./install.ps1 -install
-rm install.ps1
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/xtellurian/NoRegressions/install/install.ps1'))
 ```
 
 On Linux:
