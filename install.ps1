@@ -1,4 +1,4 @@
-param ( [switch]$install )
+param ( [switch]$runtime )
 
 ####################################################################################
 #                   INSTALLER SCRIPT FOR NOREG ON WINDOWS                          #
@@ -53,7 +53,7 @@ function Install-NoRegressions{
     $FILE_TO_SOURCE =  Join-Path -Path $INSTALL_DIR -ChildPath "install.ps1"
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/xtellurian/NoRegressions/install/install.ps1" -UseBasicParsing -OutFile $FILE_TO_SOURCE
     # source this file when booting powershell
-    $startup_command = ". $INSTALL_DIR\install.ps1"
+    $startup_command = ". $INSTALL_DIR\install.ps1 -runtime"
     $file = Get-Content $profile
     $containsWord = $file | %{$_ -match ".noreg"}
     if ($containsWord -contains $true) {
@@ -68,8 +68,10 @@ function Install-NoRegressions{
 
 $global:NOREG_DLL_PATH = Join-Path -Path $INSTALL_DIR -ChildPath "netcoreapp2.2\cli.dll"
 echo "noreg path is $global:NOREG_DLL_PATH"
-if($install)
+if($runtime)
 {
+    
+} else {
     Install-NoRegressions
 }
 
