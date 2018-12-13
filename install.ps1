@@ -5,7 +5,7 @@ param ( [switch]$runtime )
 ####################################################################################
 
 # choose your release version
-$RELEASE_VERSION="v0.0.1"
+$RELEASE_VERSION="v0.0.2"
 ### Set install location
 $INSTALL_DIR = Join-Path -Path $HOME -ChildPath ".noreg"
 
@@ -24,8 +24,7 @@ function Install-NoRegressions{
     }
 
     # set some variables
-    
-    $URI="https://github.com/xtellurian/NoRegressions/releases/download/$RELEASE_VERSION/noreg.zip"
+    $URI="https://github.com/xtellurian/NoRegressions/releases/download/$RELEASE_VERSION/noreg-win10-x64.zip"
     $ZIPFILENAME="noreg-$RELEASE_VERSION.zip"
 
     $ZIPFILE = Join-Path -Path $INSTALL_DIR -ChildPath $ZIPFILENAME
@@ -66,8 +65,8 @@ function Install-NoRegressions{
    
 }
 
-$global:NOREG_DLL_PATH = Join-Path -Path $INSTALL_DIR -ChildPath "netcoreapp2.2\cli.dll"
-echo "noreg path is $global:NOREG_DLL_PATH"
+$global:NOREG_EXE_PATH = Join-Path -Path $INSTALL_DIR -ChildPath "publish\cli.exe"
+echo "noreg path is $global:NOREG_EXE_PATH"
 if($runtime)
 {
     
@@ -76,7 +75,7 @@ if($runtime)
 }
 
 function global:Execute-NoRegressions {
-    dotnet $global:NOREG_DLL_PATH $args
+    ./$global:NOREG_EXE_PATH $args
 }
 
 Set-Alias noreg Execute-NoRegressions -Scope Global
