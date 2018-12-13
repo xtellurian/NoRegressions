@@ -27,7 +27,7 @@ function Install-NoRegressions{
     
     $URI="https://github.com/xtellurian/NoRegressions/releases/download/$RELEASE_VERSION/noreg.zip"
     $ZIPFILENAME="noreg-$RELEASE_VERSION.zip"
-    $INSTALL_DIR = Join-Path -Path $HOME ".noreg"
+
     $ZIPFILE = Join-Path -Path $INSTALL_DIR -ChildPath $ZIPFILENAME
     if(-Not [System.IO.Directory]::Exists($INSTALL_DIR))
     {
@@ -69,7 +69,7 @@ function Install-NoRegressions{
 }
 
 $global:NOREG_DLL_PATH = Join-Path -Path $INSTALL_DIR -ChildPath "netcoreapp2.2\cli.dll"
-
+echo "noreg path is $global:NOREG_DLL_PATH"
 if($install)
 {
     Install-NoRegressions
