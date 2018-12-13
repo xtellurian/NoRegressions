@@ -39,17 +39,20 @@ if(-Not [System.IO.File]::Exists($profile))
 # setup our environment so we can use noreg
 
 $file = Get-Content $profile
-$containsWord = $file | %{$_ -match ".noreg"}
+$containsWord = $file | %{$_ -match ".noreg"} # this is a weird check.
 if ($containsWord -contains $true) {
     Write-Host "Already sourcing this file"
 } else {
-    echo "adding to profile"
-    $Env:path += ";$"
+    echo "Adding to profile at $profile"
+    $Env:path += ";$INSTALL_DIR\publish"
     Set-Alias noreg noreg-cli -Scope Global
     # do the same but in the profile
     $SETENV_COMMAND = -join('$Env:path += ', '"',";$INSTALL_DIR\publish", '"')   
-    echo $SETENV_COMMAND
-    echo $SETENV_COMMAND | Out-File $profile -Append # 
-    echo "Set-Alias noreg noreg-cli -Scope Global"| Out-File $profile -Append # 
-    echo "" | Out-File $profile -Append # newline
+    echo $SETENV_COMMAND | Out-File $profile -Append -Encoding UTF8 # add to the path
+    echo "Set-Alias noreg noreg-cli -Scope Global"| Out-File $profile -Append -Encoding UTF8 # alias the binary as noreg
+    echo "" | Out-File $profile -Append -Encoding UTF8 # newline
 }
+
+echo "To uninstall noreg, delete $home\.noreg and remove the relevant lines from $profile"
+
+echo "Run ~ noreg version"
