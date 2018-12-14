@@ -30,7 +30,7 @@ namespace cli
         {
             BuildConfig();
             // register service provider
-           // Dependencies.ServiceCollection.AddSingleton<IServiceProvider>();
+            // Dependencies.ServiceCollection.AddSingleton<IServiceProvider>();
             // register utilities
             Dependencies.ServiceCollection.AddTransient<ILogger, Logger>();
             Dependencies.ServiceCollection.AddSingleton<IConfiguration>(Dependencies.Configuration);
@@ -47,11 +47,9 @@ namespace cli
             Dependencies.ServiceCollection.AddSingleton<IDatasetService, FileSystemDatasetService>();
             Dependencies.ServiceCollection.AddTransient<IDatasetResolverService, DatasetResolverService>();
             Dependencies.ServiceCollection.AddTransient<IFileParserService, FileParserService>();
-            Dependencies.ServiceCollection.AddTransient<ITestingService>( a => new TestingService(a));
-            Dependencies.ServiceCollection.AddSingleton<ITestResultStore, MLFLowResultStore>();
-            Dependencies.UseMLFlow();
-            Dependencies.ServiceCollection.Configure<MLFlowConfiguration>
-                (Dependencies.Configuration.GetSection("MLFlow"));
+            Dependencies.ServiceCollection.AddTransient<ITestingService>(a => new TestingService(a));
+            // configure which test result store to use
+            AddTestResultStore();
             // register testers
             Dependencies.ServiceCollection.AddTransient<ICustomVisionTester, CustomVisionTester>();
             // register targets
@@ -60,6 +58,24 @@ namespace cli
             Dependencies.ServiceCollection.AddTransient<ISingleClassImageDataset, SampleSingleClassObjectDetectionDataset>();
 
             Dependencies.Build();
+        }
+
+        private static void AddTestResultStore()
+        {
+            var resultStoreName = Dependencies.Configuration["resultStore:name"];
+            switch (resultStoreName) // then use ml flow
+            {
+                case "mlflow":
+                    Dependencies.ServiceCollection.AddSingleton<ITestResultStore, MLFLowResultStore>();
+                    Dependencies.UseMLFlow();
+                    Dependencies.ServiceCollection.Configure<MLFlowConfiguration>
+                        (Dependencies.Configuration.GetSection("MLFlow"));
+                    break;
+                default:
+                    Dependencies.ServiceCollection.AddSingleton<ITestResultStore, BasicTestResultStore>();
+                    break;
+
+            }
         }
 
         public static string ConfigurationRoot => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -74,7 +90,7 @@ namespace cli
                 .AddJsonFile("configsettings.json",
                             optional: true)
                 .AddEnvironmentVariables();
-            
+
 
             Dependencies.Configuration = builder.Build();
         }

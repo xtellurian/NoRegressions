@@ -7,6 +7,8 @@ namespace cli.Verbs
     {
         [Option("azure-blob-string", Required = false, HelpText = "Set Azure Blob connection string")]
         public string AzureBlobConnectionString { get; set; }
+        [Option("test-result-store", Required = false, Default = null, HelpText = "eg: mlflow")]
+        public string TestResultStore { get; set; }
 
         [Option('d', "default", Default = false, Required = false, HelpText = "Specify if value is default")]
         public bool IsDefault { get; set; }

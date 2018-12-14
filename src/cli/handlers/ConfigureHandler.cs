@@ -44,6 +44,12 @@ namespace cli.Handlers
                             break;
                     }
                 }
+                if(!string.IsNullOrEmpty(verb.TestResultStore)) 
+                {
+                    var model = LoadConfigurationModel();
+                    model.ResultStore = new TestResultStoreConfig{Name = verb.TestResultStore};
+                    SaveConfigurationModel(model);
+                }
             });
         }
 

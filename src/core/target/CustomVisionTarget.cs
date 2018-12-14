@@ -19,7 +19,7 @@ namespace core.Target
         private string Key;
         private string IterationId;
 
-        public CustomVisionTarget(IConfiguration configuration)
+        public CustomVisionTarget(ILogger logger, IConfiguration configuration)
         {
             Key = configuration["customVision:predictionKey"];
             Endpoint = configuration["customVision:endpoint"];
@@ -27,10 +27,12 @@ namespace core.Target
 
             if (string.IsNullOrEmpty(Key))
             {
-                throw new NullReferenceException("Custom Vision Key cannot be null or empty");
+                logger.Log("Warning, no Custom Vision Prediction Key provided. To set the key, run:");
+                logger.Log("noreg config -k cv-key -v <YOUR_KEY>"); 
             }
             if (string.IsNullOrEmpty(Endpoint))
             {
+                logger.Log("WARNING. Use-> noreg config -k cv-endpoint -v <http://something/url>"); 
                 throw new NullReferenceException("Custom Vision Endpoint cannot be null or empty");
             }
             httpClient = new HttpClient();
@@ -45,7 +47,7 @@ namespace core.Target
 
         public async Task<string> PredictClassFromUrl(string url)
         {
-            var serialized = JsonConvert.SerializeObject(new { Url = url });
+            var serialized = JsonConvert.SerializeObject(new { url = url });
             var content = new StringContent(serialized, Encoding.UTF8, "application/json");
             var fullyQualifiedEndpoint = Endpoint + $"?iterationId={IterationId}";
             var httpResponse = await httpClient.PostAsync(fullyQualifiedEndpoint, content);
