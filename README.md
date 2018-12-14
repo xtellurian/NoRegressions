@@ -29,11 +29,30 @@ iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercon
 ```
 
 On Linux:
+
 ```sh
 echo "linux installer not implemented yet!"
 ```
 
+On Mac:
+
+Homebrew is the easiest way to manage your CLI install. It provides convenient ways to install, update, and uninstall. If you don't have homebrew available on your system, [install homebrew](https://docs.brew.sh/Installation.html) before continuing.
+
+You can install the CLI by updating your brew repository information, and then running the install command:
+
+```sh
+brew update && brew tap AussieDevCrew/NoRegressions https://github.com/JasonTheDeveloper/NoRegressions.git && brew install AussieDevCrew/NoRegressions/noreg-cli
+```
+
 Now NoRegressions is aliased as `noreg`
+
+# Uninstall
+
+On Mac:
+
+```sh
+brew remove AussieDevCrew/NoRegressions/noreg-cli
+```
 
 # Sample Commands
 
