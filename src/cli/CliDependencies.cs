@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using cli.Contract;
 using cli.Handlers;
 using cli.Handlers.Dataset;
@@ -61,12 +62,13 @@ namespace cli
             Dependencies.Build();
         }
 
+        public static string ConfigurationRoot => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
         private static void BuildConfig()
         {
-            var path = Directory.GetCurrentDirectory();
             var builder = new ConfigurationBuilder()
-                .SetBasePath(path)
-                .AddJsonFile("appsettings.json",
+                .SetBasePath(CliDependencies.ConfigurationRoot)
+                .AddJsonFile("appsettings.json", // this won't load properly as CLI
                             optional: false,
                             reloadOnChange: true)
                 .AddJsonFile("configsettings.json",
